@@ -3,13 +3,25 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 
+// const mongoose = require('mongoose')
+// const bodyParser = require('body-parser')
+
+// const userSchema = mongoose.Schema({
+//   username: String,
+// })
+
 app.use(cors())
 app.use(express.static('public'))
+app.use(bodyParser.urlencoded())
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
-
+// app.post('/api/users', (req, res) => {
+//   console.log(req.body)
+//   console.log(req.body.username)
+// })
 
 
 
