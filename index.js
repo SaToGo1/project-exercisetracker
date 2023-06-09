@@ -24,16 +24,17 @@ const userSchema = mongoose.Schema({
   username: String,
 })
 
-let User = mongoose.model('users', userSchema)
+const User = mongoose.model('users', userSchema)
 
 const exerciseSchema = mongoose.Schema({
   username: String,
   description: String,
   duration: Number,
   date: String,
+  _id: Number,
 })
 
-let Exercise = mongoose.model('exercises', exerciseSchema)
+const Exercise = mongoose.model('exercises', exerciseSchema)
 
 
 //
@@ -45,7 +46,7 @@ let Exercise = mongoose.model('exercises', exerciseSchema)
 //
 
 // Add a user, returns a promise with it's data.
-const addUser = (name) => {
+const addUser = ({ name }) => {
   let user = new User({
     username: name
   })
@@ -73,12 +74,23 @@ const clearUsers = () => {
   User.deleteMany({})
     .then(() => console.log('All Users Deleted'))
 }
-clearUsers();
 
 //
 // EXERCISES
 //
 
+// const addExercise = (username, id, ) => {
+//   const exercise = new Exercise({
+//     username
+//   })
+// }
+
+//   username: String,
+//   description: String,
+//   duration: Number,
+//   date: String,
+//   _id: Number,
+// })
 // #################
 // # Express Logic #
 // #################
@@ -91,8 +103,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/users', (req, res) => {
-  let username = req.body.username
-  addUser(username)
+  let userName = req.body.username
+  addUser({ 
+    name: userName 
+  })
     .then(userData => {
       res.json({
         username: userData.username,
