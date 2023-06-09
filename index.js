@@ -13,22 +13,29 @@ const bodyParser = require('body-parser')
 // ###################
 mongoose.connect(URI)
   .then(() => {
-    console.log('\n','=>', 'connected to the Database', '\n')
+    console.log('\n=>', 'connected to the Database', '\n')
   })
   .catch(err => console.log('\n', err))
 
+//
+//  SCHEMAS AND MODELS
+//
 const userSchema = mongoose.Schema({
   username: String,
 })
 
 let User = mongoose.model('users', userSchema)
 
+//
+//  SERVICES
+//
+
 // Add a user, returns a promise with it's data.
 const addUser = (name) => {
   let user = new User({
     username: name
   })
-  
+
   return user.save()
     .then(data => {
       console.log('==>', `Added user ${data.username}`)
@@ -37,6 +44,17 @@ const addUser = (name) => {
     .catch(err => console.log(err))
 }
 
+// Retrieve all the users, returns a promise.
+const getAllUsers = () => {
+  return User.find({})
+    .then(data => {
+      console.log('data retrieved =', data)
+      return data;
+    })
+    .catch(err => console.log(err))
+}
+
+// Clear all the users in the database.
 const clearUsers = () => {
   User.deleteMany({})
     .then(() => console.log('All Users Deleted'))
@@ -57,11 +75,16 @@ app.post('/api/users', (req, res) => {
   let username = req.body.username
   addUser(username)
     .then(userData => {
-      res.json({ 
+      res.json({
         username: userData.username,
         _id: userData._id
       })
     })
+})
+
+app.get('/api/users', (req, res) => {
+  getAllUsers()
+    .then(users => res.json(users))
 })
 
 
