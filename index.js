@@ -63,7 +63,7 @@ const addUser = ({ name }) => {
 const getAllUsers = () => {
   return User.find({})
     .then(data => {
-      console.log('data retrieved =', data)
+      console.log('All users retrieved =', data)
       return data;
     })
     .catch(err => console.log(err))
@@ -75,11 +75,21 @@ const clearUsers = () => {
     .then(() => console.log('All Users Deleted'))
 }
 
+// Retrieve user by id
+const getUserById = ({ id }) => {
+  return User.find({ _id: id})
+    .then(data => {
+      console.log('user retrieved by id =', data)
+      return data;
+    })
+    .catch(err => console.log(err))
+}
+
 //
 // EXERCISES
 //
 
-const addExercise = ({ id, username, date, duration, description}) => {
+const addExercise = ({ id, username, date, duration, description }) => {
   const exercise = new Exercise({
     id: id,
     username: username,
