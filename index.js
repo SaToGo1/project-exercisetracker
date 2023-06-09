@@ -73,6 +73,7 @@ const clearUsers = () => {
   User.deleteMany({})
     .then(() => console.log('All Users Deleted'))
 }
+clearUsers();
 
 //
 // EXERCISES
@@ -105,7 +106,13 @@ app.get('/api/users', (req, res) => {
     .then(users => res.json(users))
 })
 
-
+app.post('/api/users/:_id/exercises', (req, res) => {
+  console.log(req.body)
+  console.log(req.body.description);
+  console.log(req.params._id)
+  console.log(req.body.date)
+  console.log(req.body.duration)
+})
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
