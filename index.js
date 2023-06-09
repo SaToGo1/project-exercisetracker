@@ -27,11 +27,11 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model('users', userSchema)
 
 const exerciseSchema = mongoose.Schema({
-  username: String,
-  description: String,
-  duration: Number,
-  date: String,
   _id: Number,
+  username: String,
+  date: String,
+  duration: Number,
+  description: String,
 })
 
 const Exercise = mongoose.model('exercises', exerciseSchema)
@@ -79,11 +79,15 @@ const clearUsers = () => {
 // EXERCISES
 //
 
-// const addExercise = (username, id, ) => {
-//   const exercise = new Exercise({
-//     username
-//   })
-// }
+const addExercise = ({ id, username, date, duration, description}) => {
+  const exercise = new Exercise({
+    id: id,
+    username: username,
+    date: date,
+    duration: duration,
+    description: description,
+  })
+}
 
 //   username: String,
 //   description: String,
