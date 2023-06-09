@@ -26,8 +26,22 @@ const userSchema = mongoose.Schema({
 
 let User = mongoose.model('users', userSchema)
 
+const exerciseSchema = mongoose.Schema({
+  username: String,
+  description: String,
+  duration: Number,
+  date: String,
+})
+
+let Exercise = mongoose.model('exercises', exerciseSchema)
+
+
 //
 //  SERVICES
+//
+
+//
+// USERS 
 //
 
 // Add a user, returns a promise with it's data.
@@ -59,6 +73,10 @@ const clearUsers = () => {
   User.deleteMany({})
     .then(() => console.log('All Users Deleted'))
 }
+
+//
+// EXERCISES
+//
 
 // #################
 // # Express Logic #
