@@ -36,8 +36,11 @@ const addUser = (name) => {
     })
     .catch(err => console.log(err))
 }
-// addUser('Lix') // For testing REMEMBER TO DELETE  -----
 
+const clearUsers = () => {
+  User.deleteMany({})
+    .then(() => console.log('All Users Deleted'))
+}
 
 // #################
 // # Express Logic #
@@ -51,8 +54,14 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/users', (req, res) => {
-   console.log(req.body)
-   console.log(req.body.username)
+  let username = req.body.username
+  addUser(username)
+    .then(userData => {
+      res.json({ 
+        username: userData.username,
+        _id: userData._id
+      })
+    })
 })
 
 
