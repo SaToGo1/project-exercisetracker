@@ -6,7 +6,7 @@ require('dotenv').config()
 const URI = process.env['MY_URI']
 const mongoose = require('mongoose')
 
-// const bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 // ###################
 // # Moongoose Logic #
@@ -36,7 +36,7 @@ const addUser = (name) => {
     })
     .catch(err => console.log(err))
 }
-// addUser('Lix') // For testing
+// addUser('Lix') // For testing REMEMBER TO DELETE  -----
 
 
 // #################
@@ -44,16 +44,16 @@ const addUser = (name) => {
 // #################
 app.use(cors())
 app.use(express.static('public'))
-// app.use(bodyParser.urlencoded())
+app.use(bodyParser.urlencoded())
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
-// app.post('/api/users', (req, res) => {
-//   console.log(req.body)
-//   console.log(req.body.username)
-// })
+app.post('/api/users', (req, res) => {
+   console.log(req.body)
+   console.log(req.body.username)
+})
 
 
 
