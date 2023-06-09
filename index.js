@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model('users', userSchema)
 
 const exerciseSchema = mongoose.Schema({
-  _id: Number,
+  _id: String,
   username: String,
   date: String,
   duration: Number,
@@ -77,10 +77,10 @@ const clearUsers = () => {
 
 // Retrieve user by id
 const getUserById = ({ id }) => {
-  return User.find({ _id: id})
+  return User.find({ _id: id })
     .then(data => {
       console.log('user retrieved by id =', data)
-      return data;
+      return data[0];
     })
     .catch(err => console.log(err))
 }
@@ -90,21 +90,24 @@ const getUserById = ({ id }) => {
 //
 
 const addExercise = ({ id, username, date, duration, description }) => {
-  const exercise = new Exercise({
-    id: id,
+  console.log(`id from addExercise ${id}`)
+  console.log(id)
+  let exercise = new Exercise({
+    _id: id,
     username: username,
     date: date,
     duration: duration,
     description: description,
   })
+
+  return exercise.save()
+    .then(data => {
+      console.log('==>', `Added exercise for user: ${data.username}`)
+      return data;
+    })
+    .catch(err => console.log('error saving exercise', '\n', err))
 }
 
-//   username: String,
-//   description: String,
-//   duration: Number,
-//   date: String,
-//   _id: Number,
-// })
 // #################
 // # Express Logic #
 // #################
@@ -135,11 +138,27 @@ app.get('/api/users', (req, res) => {
 })
 
 app.post('/api/users/:_id/exercises', (req, res) => {
-  console.log(req.body)
-  console.log(req.body.description);
-  console.log(req.params._id)
-  console.log(req.body.date)
-  console.log(req.body.duration)
+  const id = req.params._id;
+  const description = req.body.description;
+  const duration = req.body.duration;
+  
+  let date = new Date(req.body.date);
+  date = date.toDateString();
+
+  getUserById({ id })
+    .then(user => 
+      addExercise({
+        id: id,
+        username: user.username,
+        date: date,
+        duration: duration,
+        description: description,
+      })
+    )
+    .then(exercise => {
+      res.json(exercise)
+    })
+    .catch(err => console.log(err))
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
