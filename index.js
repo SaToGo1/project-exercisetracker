@@ -8,17 +8,40 @@ const mongoose = require('mongoose')
 
 // const bodyParser = require('body-parser')
 
-mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(data => {
-    console.log('\n', 'connected to the Database')
+// ###################
+// # Moongoose Logic #
+// ###################
+mongoose.connect(URI)
+  .then(() => {
+    console.log('\n','=>', 'connected to the Database', '\n')
   })
   .catch(err => console.log('\n', err))
 
-// const userSchema = mongoose.Schema({
-//   username: String,
-// })
+const userSchema = mongoose.Schema({
+  username: String,
+})
+
+let User = mongoose.model('users', userSchema)
+
+// Add a user, returns a promise with it's data.
+const addUser = (name) => {
+  let user = new User({
+    username: name
+  })
+  
+  return user.save()
+    .then(data => {
+      console.log('==>', `Added user ${data.username}`)
+      return data;
+    })
+    .catch(err => console.log(err))
+}
+// addUser('Lix') // For testing
 
 
+// #################
+// # Express Logic #
+// #################
 app.use(cors())
 app.use(express.static('public'))
 // app.use(bodyParser.urlencoded())
