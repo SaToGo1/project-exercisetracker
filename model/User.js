@@ -52,7 +52,7 @@ const clearUsers = () => {
 const getUserById = ({ id }) => {
   return User.find({ _id: id })
     .then(data => {
-      console.log('user retrieved by id =', data)
+      console.log('user retrieved by id =', data[0])
       return data[0];
     })
     .catch(err => console.log(err))

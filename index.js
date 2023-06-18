@@ -5,7 +5,9 @@ require('dotenv').config();
 
 const bodyParser = require('body-parser');
 
-// Database
+// ############
+// # Database #
+// ############
 const connectDatabase = require('./model/Connect.js');
 connectDatabase();
 
@@ -24,6 +26,9 @@ const {
   clearExercises
 } = require('./model/Exercise.js');
 
+const {
+  FindAndPopulateUser
+} = require('./model/Logs.js')
 // #################
 // # Express Logic #
 // #################
@@ -66,13 +71,12 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   const id = req.params._id;
   const description = req.body.description;
   const duration = Number(req.body.duration);
-  console.log('duration', duration) // ---------------------
-  console.log('typeofduration', typeof(duration)) // ----------------
 
-
+  // TODO: if date is empty ( === undefined) put TODAY as date.
   let date = new Date(req.body.date);
+  if (req.body.date === undefined) date = new Date()
   date = date.toDateString();
-
+  
   addExercise({
     date: date,
     duration: duration,
@@ -97,6 +101,30 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         })
         .catch(err => console.log(err))
     })
+})
+
+// GET request to /api/users/:_id/logs
+app.get('/api/users/:_id/logs', (req, res) => {
+  const id = req.params._id;
+  FindAndPopulateUser({ id })
+    .then(user => {
+      console.log(user.log)
+      const logs = user.log.map((el) => {
+        const date = new Date(el.date)
+        return {
+          description: el.description,
+          duration: el.duration,
+          date: date.toDateString()
+        }
+      })
+      res.json({
+        _id: id,
+        username: user.username,
+        count: user.log.length,
+        log: logs
+      })
+    })
+  
 })
 
 app.get('/api/clear', (req, res) => {
