@@ -114,12 +114,6 @@ app.get('/api/users/:_id/logs', (req, res) => {
   let limit = req.query.limit;
   const isLimit = limit != undefined;
 
-  console.log('from', from) // -------------------------------------
-  console.log('isFrom', isFrom) // -------------------------------------
-  console.log('to', to) // -------------------------------------
-  console.log('isTo', isTo) // -------------------------------------
-  console.log('limit', limit) // -------------------------------------
-  console.log('isLimit', isLimit) // -------------------------------------
   FindAndPopulateUser({ id })
     .then(user => {
       console.log(user.log)
