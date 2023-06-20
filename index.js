@@ -118,7 +118,6 @@ app.get('/api/users/:_id/logs', (req, res) => {
   
   FindAndPopulateUser({ id })
     .then(user => {
-      console.log(user.log)
       const logs = user.log
         // Elements that doesnt met query conditions are returned as null
         .map((el) => {
