@@ -36,7 +36,7 @@ const addUser = ({ name }) => {
 const getAllUsers = () => {
   return User.find({})
     .then(data => {
-      console.log('All users retrieved =', data.username)
+      console.log('All users retrieved')
       return data;
     })
     .catch(err => console.log(err))
