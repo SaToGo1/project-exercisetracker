@@ -29,6 +29,7 @@ const {
 const {
   FindAndPopulateUser
 } = require('./model/Logs.js')
+
 // #################
 // # Express Logic #
 // #################
@@ -72,7 +73,6 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   const description = req.body.description;
   const duration = Number(req.body.duration);
 
-  // TODO: if date is empty ( === undefined) put TODAY as date.
   let date = new Date(req.body.date);
   if (req.body.date === undefined) date = new Date()
   date = date.toDateString();
@@ -108,41 +108,78 @@ app.get('/api/users/:_id/logs', (req, res) => {
   const id = req.params._id;
 
   const from = new Date(req.query.from);
-  const isFrom = from != undefined;
+  const isFrom = req.query.from != undefined;
+  
   const to = new Date(req.query.to);
-  const isTo = to != undefined;
+  const isTo = req.query.to != undefined;
+  
   let limit = req.query.limit;
-  const isLimit = limit != undefined;
-
+  const isLimit = req.query.limit != undefined;
+  
   FindAndPopulateUser({ id })
     .then(user => {
       console.log(user.log)
-      const logs = user.log.map((el) => {
-        // LIMIT ENTRIES
-        if (isLimit && limit <= 0){
-          return;
-        }
-        if(isLimit && limit > 0){
-          limit --;
-        }
-        
-        // DATES
-        const date = new Date(el.date)
-        if (isFrom && date < from) return ;
-        if (isTo && date > to) return ;
-        
-        return {
-          description: el.description,
-          duration: el.duration,
-          date: date.toDateString()
-        }
-      }).filter(el => el != null)
-      res.json({
+      const logs = user.log
+        // Elements that doesnt met query conditions are returned as null
+        .map((el) => {
+          // DATES
+          const date = new Date(el.date)
+          // DATE inferior to 'from' or bigger than 'to' returns null.
+          if (isFrom && date < from) return null;
+          if (isTo && date > to) return null;
+
+          // LIMIT ENTRIES
+          if (isLimit && limit <= 0){
+            return null;
+          }
+          if(isLimit && limit > 0){
+            limit --;
+          }
+          
+          return {
+            description: el.description,
+            duration: el.duration,
+            date: date
+          }
+        })
+        // Eliminate Elements that don't met query conditions
+        .filter(el => el != null)
+        // sort the exercises by the dates in Ascending order
+        // being the first one the most recent
+        .sort((el1, el2) => el2.date.getTime() - el1.date.getTime())
+        // Change format for date.
+        .map(el => ({
+            ...el,
+            date: el.date.toDateString()
+          }))
+
+      // Build the Response
+      // First part of the output
+      let output = {
         _id: id,
         username: user.username,
-        count: user.log.length,
+      }
+
+      // add query if exists to the output
+      if (isFrom) output = {
+            ...output,
+            from: from.toDateString()
+      }
+
+      if (isTo) output = {
+            ...output,
+            to: to.toDateString()
+      }
+
+      // Add the logs to the output
+      output = {
+        ...output,
+        count: logs.length,
         log: logs
-      })
+      }
+      
+      // Serve output.
+      res.json(output)
     })
   
 })
