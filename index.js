@@ -106,17 +106,43 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 // GET request to /api/users/:_id/logs
 app.get('/api/users/:_id/logs', (req, res) => {
   const id = req.params._id;
+
+  const from = new Date(req.query.from);
+  const isFrom = from != undefined;
+  const to = new Date(req.query.to);
+  const isTo = to != undefined;
+  let limit = req.query.limit;
+  const isLimit = limit != undefined;
+
+  console.log('from', from) // -------------------------------------
+  console.log('isFrom', isFrom) // -------------------------------------
+  console.log('to', to) // -------------------------------------
+  console.log('isTo', isTo) // -------------------------------------
+  console.log('limit', limit) // -------------------------------------
+  console.log('isLimit', isLimit) // -------------------------------------
   FindAndPopulateUser({ id })
     .then(user => {
       console.log(user.log)
       const logs = user.log.map((el) => {
+        // LIMIT ENTRIES
+        if (isLimit && limit <= 0){
+          return;
+        }
+        if(isLimit && limit > 0){
+          limit --;
+        }
+        
+        // DATES
         const date = new Date(el.date)
+        if (isFrom && date < from) return ;
+        if (isTo && date > to) return ;
+        
         return {
           description: el.description,
           duration: el.duration,
           date: date.toDateString()
         }
-      })
+      }).filter(el => el != null)
       res.json({
         _id: id,
         username: user.username,
