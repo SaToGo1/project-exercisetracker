@@ -19,9 +19,7 @@ Project made from a FreeCodeCamp project template, index.js and model made by me
 
 ## Example of requests
 
-make an user and save the id example:   
-- 6490e1b154f05f59a5715ff3
-
+make an user and save the id.
 Check the exercises save in a specific users:  
 - /api/users/6490e1b154f05f59a5715ff3/logs
 - /api/users/:_id/logs
@@ -36,4 +34,4 @@ Check the logs of the user limiting the amount of resullts you get:
 
 # FreeCodeCamp
 
-This is the boilerplate for the Exercise Tracker project. Instructions for building your project can be found at https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker
+This is the Exercise Tracker project from freeCodeCamp. Instructions for building your project can be found at https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker
