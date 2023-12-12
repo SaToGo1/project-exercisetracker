@@ -47,11 +47,15 @@ app.post('/api/users', (req, res) => {
     name: userName
   })
     .then(userData => {
-      res.json({
+      res.status(201).json({
         username: userData.username,
         _id: userData._id
       })
     })
+    .catch(err => {
+      console.error(err);
+      return res.status(400).json({ error: 'Failed to add user' });
+    });
 })
 
 // Response with all the users
@@ -59,13 +63,17 @@ app.get('/api/users', (req, res) => {
   getAllUsers()
     //res.json({ username: users.username, _id: users._id }
     .then(users => {
-      res.json(users.map(el => {
+      res.status(200).json(users.map(el => {
         return {
           _id: el._id,
           username: el.username
         }
       }))
     })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
 })
 
 app.post('/api/users/:_id/exercises', (req, res) => {
@@ -91,7 +99,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
           })
         )
         .then(user => {
-          res.json({
+          res.status(201).json({
             _id: user._id,
             username: user.username,
             date: date,
@@ -99,8 +107,15 @@ app.post('/api/users/:_id/exercises', (req, res) => {
             description: description,
           })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+          return res.status(400).json({ msg: err })
+        })
     })
+    .catch(err => {
+      console.error(err);
+      res.status(400).json({ error: 'Failed to add exercise' });
+    });
 })
 
 // GET request to /api/users/:_id/logs
@@ -178,8 +193,12 @@ app.get('/api/users/:_id/logs', (req, res) => {
       }
       
       // Serve output.
-      res.json(output)
+      res.status(200).json(output)
     })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
   
 })
 
